@@ -1,0 +1,15 @@
+galaxy_info:
+  author:
+    - Luiggi Torricelli
+  description: List SMP/E information from a CSI data set.
+  license: Apache-2.0
+  min_ansible_version: 2.15
+  galaxy_tags:
+    - zos
+    - mainframe
+    - smpe
+    - list
+    - software
+collections:
+  - ibm.ibm_zos_core
+dependencies: []

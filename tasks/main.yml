@@ -1,0 +1,103 @@
+---
+- name: "Assert that input variables are informed correctly."
+  ansible.builtin.assert:
+    that:
+      - (smpe_csi is string) and (smpe_csi is iterable) and (smpe_csi is not mapping)
+      - (smpe_options is not string) and (smpe_options is iterable) and (smpe_options is not mapping)
+      - (smpe_zone is string) and (smpe_zone is iterable) and (smpe_zone is not mapping)
+      - (smpe_zone_type is string) and (smpe_zone is iterable) and (smpe_zone is not mapping)
+      - (smpe_csi | length > 0) and (smpe_csi | length <= 42) and (smpe_csi | replace(' ', '') == smpe_csi)
+      - (smpe_zone | length > 0) and (smpe_zone | length <= 7) and (smpe_zone | replace(' ', '') == smpe_zone)
+      - (smpe_zone_type | length > 0) and (smpe_zone_type| length <= 6)
+    success_msg: "SUCCESS: The input variables were informed successfully!"
+    fail_msg: "ERROR: One or more input variables were wrongly informed. Make sure there are no extra spaces on the variables and the length is being respected."
+    quiet: true
+
+- name: "Verify if informed SMP/E CSI data set exists."
+  ibm.ibm_zos_core.zos_find:
+    patterns: "{{ smpe_csi | upper }}"
+    resource_type: cluster
+  register: zos_smpe_list_find_csi
+
+- name: "Fail play if informed SMP/E CSI data set does not exist."
+  ansible.builtin.fail:
+    msg: "ERROR: The informed SMP/E CSI data set '{{ smpe_csi | upper }}' was not found."
+  when: zos_smpe_list_find_csi.data_sets | length == 0
+
+- name: "Execute GIMSMP program to list information from the SMP/E CSI data set as requested."
+  ibm.ibm_zos_core.zos_mvs_raw:
+    program_name: gimsmp
+    auth: true
+    dds:
+      - dd_data_set:
+          dd_name: smpcsi
+          data_set_name: "{{ smpe_csi | replace(' ', '') | upper }}"
+      - dd_output:
+          dd_name: smpout
+          return_content:
+            type: text
+      - dd_output:
+          dd_name: smprpt
+          return_content:
+            type: text
+      - dd_output:
+          dd_name: smplist
+          return_content:
+            type: text
+      - dd_output:
+          dd_name: sysprint
+          return_content:
+            type: text
+      - dd_vio:
+          dd_name: sysut1
+      - dd_vio:
+          dd_name: sysut2
+      - dd_vio:
+          dd_name: sysut3
+      - dd_vio:
+          dd_name: sysut4
+      - dd_vio:
+          dd_name: smpwrk1
+      - dd_vio:
+          dd_name: smpwrk2
+      - dd_vio:
+          dd_name: smpwrk3
+      - dd_vio:
+          dd_name: smpwrk4
+      - dd_vio:
+          dd_name: smpwrk5
+      - dd_vio:
+          dd_name: smpwrk6
+      - dd_vio:
+          dd_name: smpwrk7
+      - dd_vio:
+          dd_name: smpwrk8
+      - dd_vio:
+          dd_name: smpwrk9
+      - dd_input:
+          dd_name: smpcntl
+          content: |
+            SET BOUNDARY({{ smpe_zone | replace(' ', '') | upper }}).
+            LIST
+            {% for option in __options %}
+            {% set opt = option %}
+            {{ '  ' + opt | upper | regex_replace('(?: *, *| +)', '\n    ') | regex_replace('\(', '(\n    ') | regex_replace('\)', '\n  )') | regex_replace('\.\s*$', '') }}
+            {% endfor %}
+            .
+  vars:
+    __options: "{{ smpe_options if smpe_options | length > 0 else smpe_default_options[smpe_zone_type | upper] }}"
+  register: zos_smpe_list_output
+
+- name: "If return code is different than 0 or 4, fail and display the entire job output."
+  ansible.builtin.debug:
+    msg: "{{ zos_smpe_list_output }}"
+  when: zos_smpe_list_output.ret_code.code | int not in [0, 4]
+
+- name: "Apply filter plugin to parse data from the SMPLIST DD content."
+  ansible.builtin.set_fact:
+    zos_smpe_list_result: "{{ (zos_smpe_list_output.dd_names | selectattr('dd_name','eq','smplist') | list | first).content | parse_gimsmp('LIST') }}"
+
+- name: "Display output content if show_output is true."
+  ansible.builtin.debug:
+    var: zos_smpe_list_result
+  when: show_output

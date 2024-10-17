@@ -1,0 +1,35 @@
+---
+argument_specs:
+  main:
+    short_description: Main set of tasks of the role zos_smpe_list.
+    author: Luiggi Torricelli
+    options:
+      show_output:
+        description: "A boolean to determine if output should be displayed or not at the end."
+        type: "bool"
+        required: false
+        default: true
+      smpe_csi:
+        description: "A string containing the SMP/E CSI data set name to be listed."
+        type: "str"
+        required: true
+      smpe_options:
+        description: "A list containing options to consider on the LIST statement."
+        default: []
+        required: false
+        type: "list"
+      smpe_zone:
+        description: "A string containing the SMP/E zone name to be listed."
+        type: "str"
+        required: true
+      smpe_zone_type:
+        description: "A string containing the SMP/E zone type to be listed."
+        type: "str"
+        required: true
+        options:
+          - "dlib"
+          - "global"
+          - "target"
+          - "DLIB"
+          - "GLOBAL"
+          - "TARGET"
