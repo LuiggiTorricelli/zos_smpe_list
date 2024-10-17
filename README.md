@@ -12,9 +12,9 @@ This role has multiple variables. The descriptions and defaults for all these va
 
 | Variable | Description | Optional? |
 | -------- | ----------- | :-------: |
-| **[`show_output`](/defaults/main.yml)** | Display the parsed content at the end | Yes (default: `true`) |
+| **[`show_output`](/defaults/main.yml)** | Display the parsed content at the end | Yes<br>(default: `true`) |
 | **[`smpe_csi`](/meta/argument_specs.yml)** | SMP/E CSI data set name to be listed | No |
-| **[`smpe_options`](/defaults/main.yml)** | Options to consider on the LIST statement | Yes (default: `[]`) |
+| **[`smpe_options`](/defaults/main.yml)** | Options to consider on the LIST statement | Yes<br>(default: `[]`) |
 | **[`smpe_zone`](/meta/argument_specs.yml)** | SMP/E zone name | No |
 | **[`smpe_zone_type`](/meta/argument_specs.yml)** | SMP/E zone type of the informed SMP/E zone (`DLIB`, `GLOBAL` or `TARGET`) | No |
 
