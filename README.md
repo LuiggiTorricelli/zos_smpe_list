@@ -18,6 +18,10 @@ This role has multiple variables. The descriptions and defaults for all these va
 | **[`smpe_zone`](/meta/argument_specs.yml)** | SMP/E zone name | No |
 | **[`smpe_zone_type`](/meta/argument_specs.yml)** | SMP/E zone type of the informed SMP/E zone (`DLIB`, `GLOBAL` or `TARGET`) | No |
 
+If `smpe_options` is not informed or is informed as an empty list, possible options for the specified SMP/E zone type will be used, based on the `smpe_default_options` variable found at **[`vars/main.yml`](/vars/main.yml)**.
+
+The `MCS` SMP/E LIST option is currently neither considered nor parsed on this role.
+
 ## Dependencies
 
 None.
