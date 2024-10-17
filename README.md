@@ -39,7 +39,7 @@ None.
 
 When this role is successfully executed, a fact named `zos_smpe_list_result` will be set. It is a dictionary, containing all entry types and subentries found on the specified zone, based on the informed variables and resulting SMP/E LIST output that was parsed:
 
-    "zos_smpe_list_result": "zos_smpe_list_result": {
+    "zos_smpe_list_result": {
         "RSU2409": {
             "DDDEF": {
                 "SMPLTS": {
