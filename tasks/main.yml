@@ -95,7 +95,7 @@
 
 - name: "Apply filter plugin to parse data from the SMPLIST DD content."
   ansible.builtin.set_fact:
-    zos_smpe_list_result: "{{ (zos_smpe_list_output.dd_names | selectattr('dd_name','eq','smplist') | list | first).content | parse_gimsmp('LIST') }}"
+    zos_smpe_list_result: "{{ (zos_smpe_list_output.dd_names | selectattr('dd_name', 'eq', 'smplist') | list | first).content | parse_gimsmp('LIST') }}"
 
 - name: "Display output content if show_output is true."
   ansible.builtin.debug:

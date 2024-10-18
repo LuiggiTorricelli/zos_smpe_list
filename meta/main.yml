@@ -1,8 +1,9 @@
 galaxy_info:
+  role_name: "zos_smpe_list"
   author: "Luiggi Torricelli"
-  description: List SMP/E information from a CSI data set.
+  description: This Ansible role will list SMP/E information from a CSI data set and return an object with parsed information.
   license: Apache-2.0
-  min_ansible_version: 2.15
+  min_ansible_version: "2.15"
   galaxy_tags:
     - zos
     - mainframe
