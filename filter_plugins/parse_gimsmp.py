@@ -569,9 +569,12 @@ class FilterModule(object):
     def parse_gimsmp_list(self, cmd_response):
         try:
             result = {}
+            # Ensure trailing spaces and first space (if any) are trimmed
+            input_content = re.sub(r" +\n ?", r"\n", cmd_response)
 
             # Replace line breaks with chars to facilitate parsing
-            input_content = re.sub(r"(?:\f|\\f|\x0c)PAGE \d+.+NOW SET TO.+", r"\n", cmd_response)
+            input_content = re.sub(r"(?:\f|\\f|\x0c|1)PAGE \d+.+NOW SET TO.+", r"\n", input_content)
+
             overall_content = {}
             entries = re.findall(r"(\S+) +(\S+) +ENTRIES\s+((?:[\s\S])*?)\n(?=\S+ +\S+ +ENTRIES|LIST +SUMMARY REPORT)", input_content, flags=re.MULTILINE)
             for entry in entries:
